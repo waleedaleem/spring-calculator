@@ -1,7 +1,14 @@
 package com.walid.calculator.service;
 
-public interface CalculatorService {
-    String calculate(String operator, String operand);
+import java.math.BigDecimal;
+import java.util.Collection;
 
-    String calculate(String operator, String firstOperand, String secondOperand);
+public interface CalculatorService {
+    void pushNumber(BigDecimal number);
+
+    BigDecimal popNumber();
+
+    void calculate(String operator);
+
+    Collection<BigDecimal> readStack();
 }

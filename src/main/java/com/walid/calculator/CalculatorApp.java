@@ -1,24 +1,41 @@
 package com.walid.calculator;
 
-import com.walid.calculator.service.CalculatorService;
+import com.walid.calculator.view.CalculatorController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+
+import java.util.Scanner;
 
 @Slf4j
+@Configuration
+@ImportResource(locations = "file:calculatorAppContext.xml")
 public class CalculatorApp {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = new FileSystemXmlApplicationContext(
-                "calculatorAppContext.xml");
+        ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(CalculatorApp.class);
 
-        CalculatorService service = (CalculatorService) context.getBean("service");
-        log.info("----------> Result= {}", service.calculate("+", "5", "4"));
-        log.info("----------> Result= {}", service.calculate("+", "500", "400"));
-        log.info("----------> Result= {}", service.calculate("-", "5", "4"));
-        log.info("----------> Result= {}", service.calculate("-", "500", "400"));
-        log.info("----------> Result= {}", service.calculate("/", "1", "3.0"));
-        log.info("----------> Result= {}", service.calculate("sqrt", "400"));
+        printAndLog("Welcome to Reverse Calculator. When finished, enter 'q' to quit.");
+
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                System.out.print(">> ");
+                String inputLine = scanner.nextLine();
+                if ("q".equalsIgnoreCase(inputLine.trim())) {
+                    log.info("User quit successfully.");
+                    printAndLog("Bye!");
+                    break;
+                }
+                context.getBean(CalculatorController.class).acceptInputLine(inputLine);
+            }
+        }
         context.close();
+    }
+
+    public static void printAndLog(String message) {
+        System.out.println(message);
+        log.info(message);
     }
 }

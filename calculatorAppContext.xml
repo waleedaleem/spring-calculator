@@ -13,26 +13,36 @@
     </bean>
 
     <bean id="add" name="+" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="operandCount" value="2"/>
         <property name="result"
                   value="#{service.firstOperand.add(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
     </bean>
 
     <bean id="subtract" name="-" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="operandCount" value="2"/>
         <property name="result"
                   value="#{service.firstOperand.subtract(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
     </bean>
 
     <bean id="multiply" name="*" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="operandCount" value="2"/>
         <property name="result"
                   value="#{service.firstOperand.multiply(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
     </bean>
 
     <bean id="div" name="/" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="operandCount" value="2"/>
         <property name="result"
                   value="#{service.firstOperand.divide(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
     </bean>
 
+    <bean id="power" name="^" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="operandCount" value="2"/>
+        <property name="result" value="#{service.firstOperand.pow(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
+    </bean>
+
     <bean id="sqrt" name="sqrt" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="operandCount" value="1"/>
         <property name="result" value="#{T(java.lang.Math).sqrt(service.firstOperand)}"/>
     </bean>
 </beans>
