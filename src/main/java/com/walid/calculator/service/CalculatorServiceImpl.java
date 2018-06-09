@@ -3,11 +3,14 @@ package com.walid.calculator.service;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 @Slf4j
 @Getter
@@ -19,29 +22,46 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
     @Getter(AccessLevel.PRIVATE)
     private ApplicationContext context;
 
+    @Autowired
+    private DecimalFormat decimalFormat;
+
     private void setFirstOperand(String firstOperand) {
-        this.firstOperand = new BigDecimal(firstOperand);
+        try {
+            this.firstOperand = new BigDecimal(firstOperand);
+        } catch (NumberFormatException ex) {
+            log.error("Invalid number {}...Exiting", firstOperand, ex);
+            throw ex;
+        }
     }
 
     private void setSecondOperand(String secondOperand) {
-        this.secondOperand = new BigDecimal(secondOperand);
+        try {
+            this.secondOperand = new BigDecimal(secondOperand);
+        } catch (NumberFormatException ex) {
+            log.error("Invalid number {}...Exiting", firstOperand, ex);
+            throw ex;
+        }
     }
 
     @Override
-    public BigDecimal calculate(String operator, String firstOperand, String secondOperand) {
-        // set firstOperand and secondOperand before instantiating the operationBean
-        setFirstOperand(firstOperand);
-        setSecondOperand(secondOperand);
+    public String calculate(String operator, String operand) {
+        // set operand before instantiating the operationBean
+        setFirstOperand(operand);
 
-        // operationBean is defined in calculatorAppContext.xml and processes firstOperand and secondOperand using SpEL
-        Operation operationBean = (Operation) getContext().getBean(operator);
-
-        if (operationBean != null) {
-            return operationBean.getResult();
-        } else {
-            log.error("Operator {} has no corresponding bean. Please add one to application context file...Exiting", operator, new RuntimeException("Check log for errors"));
-            return null;
+        try {
+            // operationBean is defined in calculatorAppContext.xml and processes firstOperand and secondOperand using SpEL
+            return decimalFormat.format(((Operation) getContext().getBean(operator)).getResult());
+        } catch (NoSuchBeanDefinitionException ex) {
+            log.error("Operator {} has no corresponding bean. Please add one to application context file...Exiting", operator, ex);
+            throw ex;
         }
+    }
+
+    @Override
+    public String calculate(String operator, String firstOperand, String secondOperand) {
+        // set secondOperand before delegating to the single operand override
+        setSecondOperand(secondOperand);
+        return calculate(operator, firstOperand);
     }
 
     @Override

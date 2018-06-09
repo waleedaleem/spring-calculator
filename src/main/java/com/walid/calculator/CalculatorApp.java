@@ -17,7 +17,8 @@ public class CalculatorApp {
         log.info("----------> Result= {}", service.calculate("+", "500", "400"));
         log.info("----------> Result= {}", service.calculate("-", "5", "4"));
         log.info("----------> Result= {}", service.calculate("-", "500", "400"));
-
+        log.info("----------> Result= {}", service.calculate("/", "1", "3.0"));
+        log.info("----------> Result= {}", service.calculate("sqrt", "400"));
         context.close();
     }
 }

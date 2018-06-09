@@ -7,11 +7,32 @@
 
     <context:component-scan base-package="com.walid.calculator"/>
 
+    <bean id="decimalFormat" class="java.text.DecimalFormat">
+        <property name="minimumFractionDigits" value="0"/>
+        <property name="maximumFractionDigits" value="10"/>
+    </bean>
+
     <bean id="add" name="+" class="com.walid.calculator.service.Operation" scope="prototype">
-        <property name="result" value="#{service.firstOperand + service.secondOperand}"/>
+        <property name="result"
+                  value="#{service.firstOperand.add(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
     </bean>
 
     <bean id="subtract" name="-" class="com.walid.calculator.service.Operation" scope="prototype">
-        <property name="result" value="#{service.firstOperand - service.secondOperand}"/>
+        <property name="result"
+                  value="#{service.firstOperand.subtract(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
+    </bean>
+
+    <bean id="multiply" name="*" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="result"
+                  value="#{service.firstOperand.multiply(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
+    </bean>
+
+    <bean id="div" name="/" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="result"
+                  value="#{service.firstOperand.divide(service.secondOperand, T(java.math.MathContext).DECIMAL64)}"/>
+    </bean>
+
+    <bean id="sqrt" name="sqrt" class="com.walid.calculator.service.Operation" scope="prototype">
+        <property name="result" value="#{T(java.lang.Math).sqrt(service.firstOperand)}"/>
     </bean>
 </beans>
