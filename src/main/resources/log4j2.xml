@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+    <Appenders>
+        <File name="logFile" fileName="calculator.log" bufferedIO="true" immediateFlush="true">
+            <PatternLayout pattern="%d [%-15.15t] %-5p %-30.30c{1} - %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="logFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
