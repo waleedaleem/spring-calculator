@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+import static com.walid.calculator.CalculatorApp.printAndLog;
+
 @Slf4j
 @Getter
 @Service(value = "service")
@@ -31,22 +33,24 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
         secondOperand = BigDecimal.valueOf(1);
     }
 
-    private void setOperand(int index, BigDecimal operand, String operator) {
-        try {
-            if (index == 1) {
-                this.firstOperand = operand;
-            } else if (index == 2) {
-                this.secondOperand = operand;
-            } else {
-                log.error("Invalid operand index {} passed to operator {}...Exiting", index, operator);
-                throw new OperandException(
-                        String.format("Invalid operand index %d passed to operator %s...Check errors in log", index, operator)
-                );
-            }
-        } catch (NumberFormatException ex) {
-            log.error("Invalid operand numeric value {} passed to operator {}...Exiting", operand, operator, ex);
-            throw ex;
+    private boolean setOperand(int index, BigDecimal operand, String operator) {
+        if (operand == null) {
+            printAndLog("Processing of input line stopped. Null operand retrieved from repository",
+                    this.getClass().getSimpleName(), true);
+            return false;
         }
+        if (index == 1) {
+            this.firstOperand = operand;
+        } else if (index == 2) {
+            this.secondOperand = operand;
+        } else {
+
+
+            log.error("Invalid operand index {} passed to operator {}...Exiting", index, operator);
+            System.err.printf("Invalid operand index %d passed to operator %s...Check errors in log", index, operator);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -60,16 +64,16 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
     }
 
     @Override
-    public void calculate(String operator) {
+    public boolean calculate(String operator) {
         try {
-            int operandCount = getContext().getBean(operator, Operation.class).getOperandCount();
+            int operandCount = getOperandCount(operator);
             if (operandCount == 1) {
                 // set operand before instantiating the operationBean
-                setOperand(1, popNumber(), operator);
+                if (!setOperand(1, popNumber(), operator)) return false;
             } else if (operandCount == 2) {
                 // set two operands before instantiating the operationBean
-                setOperand(2, popNumber(), operator);
-                setOperand(1, popNumber(), operator);
+                if (!setOperand(2, popNumber(), operator)) return false;
+                if (!setOperand(1, popNumber(), operator)) return false;
             } else {
                 log.error("Operator {} has {} operator count configured. Please correct operator count to either 1 or 2 in the application context file...Exiting", operator, operandCount);
                 throw new OperandException("Invalid operator count configuration...Check errors in log");
@@ -78,8 +82,13 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
             pushNumber(getContext().getBean(operator, Operation.class).getResult());
         } catch (NoSuchBeanDefinitionException ex) {
             log.error("Operator {} has no corresponding bean. Please add one to application context file...Exiting", operator, ex);
-            throw ex;
+            return false;
         }
+        return true;
+    }
+
+    private int getOperandCount(String operator) {
+        return getContext().getBean(operator, Operation.class).getOperandCount();
     }
 
     @Override

@@ -8,7 +8,7 @@ public interface CalculatorService {
 
     BigDecimal popNumber();
 
-    void calculate(String operator);
+    boolean calculate(String operator);
 
     Collection<BigDecimal> readStack();
 }

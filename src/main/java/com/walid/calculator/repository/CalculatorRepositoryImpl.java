@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.NoSuchElementException;
+
+import static com.walid.calculator.CalculatorApp.printAndLog;
 
 @Slf4j
 @Repository
@@ -23,7 +26,12 @@ public class CalculatorRepositoryImpl implements CalculatorRepository {
 
     @Override
     public BigDecimal pop() {
-        return stack.removeLast();
+        try {
+            return stack.removeLast();
+        } catch (NoSuchElementException ex) {
+            printAndLog("Stack underflow (empty stack)", this.getClass().getSimpleName(), true);
+            return null;
+        }
     }
 
     @Override

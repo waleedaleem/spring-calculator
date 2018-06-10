@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.walid.calculator.CalculatorApp.printAndLog;
+
 @Slf4j
 @Controller("controller")
 public class CalculatorController {
@@ -23,6 +25,7 @@ public class CalculatorController {
 
     @Autowired
     private DecimalFormat decimalFormat;
+    private boolean error = false;
 
     static List<String> tokenizeInput(String inputLine) {
         if (inputLine != null) {
@@ -36,16 +39,25 @@ public class CalculatorController {
     }
 
     private void processToken(String token) {
-        if (isNumber(token)) {
-            service.pushNumber(new BigDecimal(token));
-        } else {
-            service.calculate(token);
+        if (!error) {
+            if (isNumber(token)) {
+                service.pushNumber(new BigDecimal(token));
+            } else {
+                // use boolean error to stop processing if service.calculate() returns false
+                if (!service.calculate(token)) {
+                    error = true;
+                    printAndLog(String.format("Processing of input line stopped due to error processing token \"%s\"%n", token),
+                            this.getClass().getSimpleName(), true);
+                }
+            }
         }
     }
 
     public void acceptInputLine(String inputLine) {
+        // reset error from previous input line (if any)
+        error = false;
         List<String> tokens = tokenizeInput(inputLine);
-        if (! tokens.isEmpty()) {
+        if (!tokens.isEmpty()) {
             tokens.stream()
                     .sequential()
                     .filter(((Predicate<String>) String::isEmpty).negate())

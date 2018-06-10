@@ -17,7 +17,8 @@ public class CalculatorApp {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(CalculatorApp.class);
 
-        printAndLog("Welcome to Reverse Calculator. When finished, enter 'q' to quit.");
+        printAndLog("Welcome to Reverse Calculator. When finished, enter 'q' to quit.",
+                CalculatorApp.class.getSimpleName(), false);
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
@@ -25,7 +26,7 @@ public class CalculatorApp {
                 String inputLine = scanner.nextLine();
                 if ("q".equalsIgnoreCase(inputLine.trim())) {
                     log.info("User quit successfully.");
-                    printAndLog("Bye!");
+                    printAndLog("Bye!", CalculatorApp.class.getSimpleName(), false);
                     break;
                 }
                 context.getBean(CalculatorController.class).acceptInputLine(inputLine);
@@ -34,8 +35,14 @@ public class CalculatorApp {
         context.close();
     }
 
-    public static void printAndLog(String message) {
-        System.out.println(message);
-        log.info(message);
+    public static void printAndLog(String message, String sender, boolean isError) {
+        message = String.format("%s: %s", sender, message);
+        if (isError) {
+            System.err.printf("ERROR: %s%n", message);
+            log.error(message);
+        } else {
+            System.out.println(message);
+            log.info(message);
+        }
     }
 }
