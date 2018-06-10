@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 public interface CalculatorService {
+
     void pushNumber(BigDecimal number);
 
     BigDecimal popNumber();

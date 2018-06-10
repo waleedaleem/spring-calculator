@@ -26,6 +26,7 @@ public class CalculatorController {
     @Autowired
     private DecimalFormat decimalFormat;
     private boolean error = false;
+    private int currentTokenIndex = 0;
 
     static List<String> tokenizeInput(String inputLine) {
         if (inputLine != null) {
@@ -39,6 +40,7 @@ public class CalculatorController {
     }
 
     private void processToken(String token) {
+        currentTokenIndex++;
         if (!error) {
             if (isNumber(token)) {
                 service.pushNumber(new BigDecimal(token));
@@ -46,7 +48,7 @@ public class CalculatorController {
                 // use boolean error to stop processing if service.calculate() returns false
                 if (!service.calculate(token)) {
                     error = true;
-                    printAndLog(String.format("Processing of input line stopped due to error processing token \"%s\"%n", token),
+                    printAndLog(String.format("Processing of input line stopped due to error processing token \"%s\" (at index %d)%n", token, currentTokenIndex),
                             this.getClass().getSimpleName(), true);
                 }
             }
@@ -56,6 +58,8 @@ public class CalculatorController {
     public void acceptInputLine(String inputLine) {
         // reset error from previous input line (if any)
         error = false;
+        // reset token index
+        currentTokenIndex = 0;
         List<String> tokens = tokenizeInput(inputLine);
         if (!tokens.isEmpty()) {
             tokens.stream()
