@@ -17,7 +17,7 @@ import static com.walid.calculator.CalculatorApp.printAndLog;
  */
 
 @Slf4j
-@Repository
+@Repository("repository")
 public class CalculatorRepositoryImpl implements CalculatorRepository {
 
     // unlike stack, the journal does NOT delete any entries except when UNDOing (helps with the UNDO)
