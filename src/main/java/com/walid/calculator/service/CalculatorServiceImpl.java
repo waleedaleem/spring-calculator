@@ -3,6 +3,7 @@ package com.walid.calculator.service;
 import com.walid.calculator.repository.CalculatorRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,10 @@ import java.util.Collection;
 import static com.walid.calculator.CalculatorApp.printAndLog;
 import static com.walid.calculator.repository.CalculatorRepository.EntryType;
 
+/**
+ * @author Walid Moustafa
+ */
+
 @Slf4j
 @Getter
 @Service(value = "service")
@@ -27,6 +32,7 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
     private ApplicationContext context;
 
     @Autowired
+    @Setter
     private CalculatorRepository repository;
 
     public CalculatorServiceImpl() {
@@ -34,7 +40,7 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
         secondOperand = BigDecimal.valueOf(1);
     }
 
-    private boolean setOperand(int index, BigDecimal operand, String operator) {
+    boolean setOperand(int index, BigDecimal operand, String operator) {
         if (operand == null) {
             printAndLog("Processing of input line stopped. Null operand retrieved from repository",
                     this.getClass().getSimpleName(), true);
@@ -45,8 +51,8 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
         } else if (index == 2) {
             this.secondOperand = operand;
         } else {
-            log.error("Invalid operand index {} passed to operator {}...Exiting", index, operator);
-            System.err.printf("Invalid operand index %d passed to operator %s...Check errors in log%n", index, operator);
+            printAndLog(String.format("Invalid operand index %d passed to operator \"%s\"", index, operator),
+                    this.getClass().getSimpleName(), true);
             return false;
         }
         return true;
@@ -69,9 +75,9 @@ public class CalculatorServiceImpl implements CalculatorService, ApplicationCont
     @Override
     public boolean calculate(String operator) {
         if ("UNDO".equalsIgnoreCase(operator) && !readStack().isEmpty()) {
-            repository.unDoNumber();
+            repository.unDoEntry();
         } else if ("CLEAR".equalsIgnoreCase(operator)) {
-            repository.clear();
+            repository.clearAll();
         } else {
             try {
                 int operandCount = getOperandCount(operator);

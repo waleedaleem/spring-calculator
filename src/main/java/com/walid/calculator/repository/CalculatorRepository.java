@@ -6,17 +6,18 @@ import java.util.Collection;
 /**
  * @author Walid Moustafa
  */
+
 public interface CalculatorRepository {
 
     void pushNumber(BigDecimal number, CalculatorRepositoryImpl.EntryType entryType);
 
     BigDecimal popNumber();
 
-    void unDoNumber();
+    void unDoEntry();
 
     Collection<BigDecimal> readStack();
 
-    void clear();
+    void clearAll();
 
     // enum representing the type of the stack entry.
     // if it is an input number, then UNDO operator will just pop it out.

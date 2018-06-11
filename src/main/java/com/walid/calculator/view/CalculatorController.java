@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 
 import static com.walid.calculator.CalculatorApp.printAndLog;
 
+/**
+ * @author Walid Moustafa
+ */
+
 @Slf4j
 @Controller("controller")
 public class CalculatorController {

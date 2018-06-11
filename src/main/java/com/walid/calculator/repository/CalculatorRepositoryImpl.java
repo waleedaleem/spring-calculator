@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 
 import static com.walid.calculator.CalculatorApp.printAndLog;
 
+/**
+ * @author Walid Moustafa
+ */
+
 @Slf4j
 @Repository
 public class CalculatorRepositoryImpl implements CalculatorRepository {
@@ -37,7 +41,7 @@ public class CalculatorRepositoryImpl implements CalculatorRepository {
     }
 
     @Override
-    public void unDoNumber() {
+    public void unDoEntry() {
         NumericEntry numericEntry = popNumericEntry();
         if (numericEntry != null) {
             EntryType entryType = numericEntry.getType();
@@ -75,7 +79,7 @@ public class CalculatorRepositoryImpl implements CalculatorRepository {
     }
 
     @Override
-    public void clear() {
+    public void clearAll() {
         stack.clear();
         journal.clear();
     }

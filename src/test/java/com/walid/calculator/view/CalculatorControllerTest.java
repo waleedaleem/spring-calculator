@@ -9,6 +9,10 @@ import java.util.stream.DoubleStream;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+/**
+ * @author Walid Moustafa
+ */
+
 @Slf4j
 public class CalculatorControllerTest {
 

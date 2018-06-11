@@ -7,6 +7,10 @@ import java.math.BigDecimal;
 
 import static com.walid.calculator.repository.CalculatorRepositoryImpl.EntryType;
 
+/**
+ * @author Walid Moustafa
+ */
+
 @Data
 public class NumericEntry {
 

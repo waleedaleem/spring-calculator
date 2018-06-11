@@ -9,6 +9,10 @@ import org.springframework.context.annotation.ImportResource;
 
 import java.util.Scanner;
 
+/**
+ * @author Walid Moustafa
+ */
+
 @Slf4j
 @Configuration
 @ImportResource(locations = "file:calculatorAppContext.xml")
